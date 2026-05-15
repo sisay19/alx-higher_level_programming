@@ -2,6 +2,7 @@
 """Module containing the Base class."""
 import json
 import csv
+import turtle
 
 
 class Base:
@@ -153,3 +154,45 @@ class Base:
                 return instances
         except FileNotFoundError:
             return []
+
+    @staticmethod
+    def draw(list_rectangles, list_squares):
+        """Draw all rectangles and squares using Turtle graphics.
+
+        Opens a window and draws each shape with a different color.
+        Rectangles are drawn in blue, squares in red.
+
+        Args:
+            list_rectangles (list): List of Rectangle instances.
+            list_squares (list): List of Square instances.
+        """
+        screen = turtle.Screen()
+        screen.title("Almost a Circle - Turtle Draw")
+        t = turtle.Turtle()
+        t.speed(1)
+        t.pensize(2)
+
+        # Draw rectangles
+        for rect in list_rectangles:
+            t.penup()
+            t.goto(rect.x, rect.y)
+            t.pendown()
+            t.color("blue")
+            for _ in range(2):
+                t.forward(rect.width)
+                t.left(90)
+                t.forward(rect.height)
+                t.left(90)
+
+        # Draw squares
+        for sq in list_squares:
+            t.penup()
+            t.goto(sq.x, sq.y)
+            t.pendown()
+            t.color("red")
+            for _ in range(4):
+                t.forward(sq.size)
+                t.left(90)
+
+        t.hideturtle()
+        screen.exitonclick()
