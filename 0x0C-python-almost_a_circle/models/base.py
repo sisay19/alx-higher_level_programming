@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Module containing the Base class."""
 import json
+import csv
 
 
 class Base:
@@ -98,5 +99,57 @@ class Base:
                 json_str = f.read()
                 dict_list = cls.from_json_string(json_str)
                 return [cls.create(**d) for d in dict_list]
+        except FileNotFoundError:
+            return []
+
+    @classmethod
+    def save_to_file_csv(cls, list_objs):
+        """Serialize list_objs to a CSV file.
+
+        Args:
+            list_objs (list): List of instances.
+        """
+        filename = cls.__name__ + ".csv"
+        with open(filename, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            if list_objs is not None:
+                for obj in list_objs:
+                    if cls.__name__ == "Rectangle":
+                        writer.writerow(
+                            [obj.id, obj.width, obj.height, obj.x, obj.y]
+                        )
+                    elif cls.__name__ == "Square":
+                        writer.writerow(
+                            [obj.id, obj.size, obj.x, obj.y]
+                        )
+
+    @classmethod
+    def load_from_file_csv(cls):
+        """Deserialize CSV file to instances.
+
+        Returns:
+            list: List of instances.
+        """
+        filename = cls.__name__ + ".csv"
+        try:
+            with open(filename, 'r', newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                instances = []
+                for row in reader:
+                    if cls.__name__ == "Rectangle":
+                        inst = cls(1, 1)
+                        inst.update(
+                            id=int(row[0]), width=int(row[1]),
+                            height=int(row[2]), x=int(row[3]),
+                            y=int(row[4])
+                        )
+                    elif cls.__name__ == "Square":
+                        inst = cls(1)
+                        inst.update(
+                            id=int(row[0]), size=int(row[1]),
+                            x=int(row[2]), y=int(row[3])
+                        )
+                    instances.append(inst)
+                return instances
         except FileNotFoundError:
             return []
